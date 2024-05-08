@@ -50,6 +50,10 @@ def checkHandles():
 
 def metamaskSetup(recoveryPhrase, password):
 
+    while True:
+        if len(driver.window_handles) > 1:
+            break
+        time.sleep(1)
     driver.switch_to.window(driver.window_handles[1])
     driverClick(By.ID, 'onboarding__terms-checkbox')
     driverClick(By.XPATH, '//button[text()="导入现有钱包"]')
