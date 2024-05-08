@@ -13,9 +13,8 @@ result = open(str(result_path) + 'result.txt', mode='a', encoding='utf-8')
 for i in range(1, len(seed_phrases)):
 
     seed_phrase = seed_phrases[i]
-    checkin.runTest(seed_phrase, 10)
     try:
-        time.sleep(1)
+        checkin.runTest(seed_phrase, 10)
     except Exception as e:
         print(e)
         print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + " 第" + str(i) + "次执行失败")

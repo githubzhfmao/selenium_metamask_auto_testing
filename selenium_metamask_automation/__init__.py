@@ -58,7 +58,7 @@ def metamaskSetup(recoveryPhrase, password):
     phrases = recoveryPhrase.split(" ")
     if len(phrases) == 24:
         driverClick(By.CLASS_NAME, 'dropdown__select')
-        time.sleep(2)
+        time.sleep(3)
         driverClick(By.XPATH, '//option[text()="我有一个包含24个单词的私钥助记词"]')
         time.sleep(2)
     elif len(phrases) != 12:
@@ -72,11 +72,13 @@ def metamaskSetup(recoveryPhrase, password):
 
     driverClick(By.XPATH, '//button[text()="确认私钥助记词"]')
 
+    time.sleep(2)
     inputs = driver.find_elements(By.XPATH, '//input')
     inputs[0].send_keys(password)
     inputs[1].send_keys(password)
     driverClick(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div/div/div[2]/form/div[3]/label/input')
     driverClick(By.XPATH, '//button[text()="导入我的钱包"]')
+    time.sleep(2)
     driverClick(By.XPATH, '//button[text()="知道了！"]')
     driverClick(By.XPATH, '//button[text()="下一步"]')
     driverClick(By.XPATH, '//button[text()="完成"]')
