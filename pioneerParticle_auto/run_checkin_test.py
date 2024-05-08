@@ -15,17 +15,16 @@ def runTest(seed_phrase, wait_time):
 
     # 登录页面 https://pioneer.particle.network/zh-CN/signup
     driver.get('https://pioneer.particle.network/zh-CN/signup')
-    driver.implicitly_wait(wait_time)
     password = 'Aa112211'
     # 导入助记词
     auto.metamaskSetup(seed_phrase, password)
+    driver.implicitly_wait(wait_time)
 
     auto.driverClick(By.XPATH, "/html/body/div[1]/div[1]/div/div[1]/div[3]/div[4]/button[1]/div[1]/div/span")
     # 连接钱包
     auto.connectToWebsite('//button[text()="下一步"]')
 
     driver.get('https://pioneer.particle.network/zh-CN/point')
-    driver.implicitly_wait(wait_time)
     auto.signin()
     checkin_flag = auto.driverClick(By.XPATH, "/html/body/div[1]/div[1]/div/div[1]/div/div[2]/div[1]/div/div[4]/div[4]/button/div[1]/div/span")
     if checkin_flag:

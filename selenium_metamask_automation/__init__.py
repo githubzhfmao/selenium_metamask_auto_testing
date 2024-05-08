@@ -53,7 +53,9 @@ def metamaskSetup(recoveryPhrase, password):
     while True:
         if len(driver.window_handles) > 1:
             break
-        time.sleep(1)
+        else:
+            print("等待小狐狸...............")
+            time.sleep(1)
     driver.switch_to.window(driver.window_handles[1])
     driverClick(By.ID, 'onboarding__terms-checkbox')
     driverClick(By.XPATH, '//button[text()="导入现有钱包"]')
@@ -217,16 +219,21 @@ def connectToWebsite(str):
     driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
     driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
     time.sleep(2)
-    driverClick(By.XPATH,str)
-    driverClick(By.XPATH,'//button[text()="连接"]')
+    driverClick(By.XPATH, str)
+    driverClick(By.XPATH, '//button[text()="连接"]')
     print('Site connected to metamask')
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
 
 def acceptNetworkByChain(str):
-    time.sleep(2)
-    driver.execute_script("window.open('');")
+
+    while True:
+        if len(driver.window_handles) > 1:
+            break
+        else:
+            print("等待小狐狸...............")
+            time.sleep(1)
     driver.switch_to.window(driver.window_handles[1])
 
     driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
@@ -241,9 +248,12 @@ def acceptNetworkByChain(str):
 
 def signin(cnt=0):
 
-    time.sleep(2)
-    driver.execute_script("window.open('');")
-    time.sleep(2)
+    while True:
+        if len(driver.window_handles) > 1:
+            break
+        else:
+            print("等待小狐狸...............")
+            time.sleep(1)
     driver.switch_to.window(driver.window_handles[1])
 
     driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
