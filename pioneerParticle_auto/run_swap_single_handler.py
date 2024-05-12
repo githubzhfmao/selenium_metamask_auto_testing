@@ -68,9 +68,15 @@ def runTest(seed_phrase, wait_time, target_wallets):
         amount.clear()
         amount.send_keys('0.00000001')
         auto.driverClick(By.XPATH, '//*[@id="send"]/div[4]/div/div/div/div/button')
-        auto.driverClick(By.XPATH, '/html/body/div[3]/div/div[3]/div/div/div[2]/div/div[2]/button', 5)
+        for i in range(5):
+            time.sleep(2)
+            auto.driverClick(By.XPATH, '/html/body/div[3]/div/div[3]/div/div/div[2]/div/div[2]/button', 1)
+            if len(driver.window_handles) > 1:
+                break
         auto.signin()
-        for i in range(10):
+        time.sleep(2)
+        driver.switch_to.frame("particle-auth-core-iframe-wallet")
+        for i in range(20):
             try:
                 driver.find_element(By.XPATH, '/html/body/div[4]/div/div[3]/div/div/div[2]/div/div[3]/button/span[2]')
             except NoSuchElementException:
