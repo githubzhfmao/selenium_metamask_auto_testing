@@ -33,6 +33,7 @@ def launchSeleniumWebdriver2(driverPath, extensionPath):
     print('path', extensionPath)
     chrome_options = Options()
     chrome_options.add_extension(extensionPath)
+    # chrome_options.add_argument("--headless")
     global driver
     driver = webdriver.Chrome(options=chrome_options, service=Service(driverPath))
     # time.sleep(5)
@@ -49,13 +50,14 @@ def checkHandles():
 
 
 def metamaskSetup(recoveryPhrase, password):
-
+    idx = 0
     while True:
-        if len(driver.window_handles) > 1:
+        if len(driver.window_handles) > 1 or idx > 30:
             break
         else:
             print("等待小狐狸...............")
             time.sleep(1)
+        idx += 1
     driver.switch_to.window(driver.window_handles[1])
     driverClick(By.ID, 'onboarding__terms-checkbox')
     driverClick(By.XPATH, '//button[text()="导入现有钱包"]')
@@ -98,12 +100,30 @@ def metamaskSetup(recoveryPhrase, password):
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
-def driverClick(by: By, value: str, cnt=4) -> bool:
+
+
+def iframe_click(by: By, value: str, cnt=4) -> bool:
+    print(f"点击按钮：{value}")
     for i in range(1, cnt):
         try:
-            driver.find_element(by, value).click()
+            target = driver.find_element(by, value)
+            driver.execute_script("arguments[0].scrollIntoView();", target)
+            target.click()
         except Exception as e:
             print(f"第{i}次点击失败：{value}")
+            time.sleep(2)
+        else:
+            return True
+    return False
+def driverClick(by: By, value: str, cnt=3) -> bool:
+    print(f"点击按钮：{value}")
+    for i in range(cnt):
+        try:
+            target = driver.find_element(by, value)
+            driver.execute_script("arguments[0].scrollIntoView();", target)
+            target.click()
+        except Exception as e:
+            print(f"第{i + 1}次点击失败：{value}")
             time.sleep(2)
         else:
             return True
@@ -210,7 +230,7 @@ def changeNetworkByChainList(network_name):
     driver.switch_to.window(driver.window_handles[0])
 
 
-def connectToWebsite(str):
+def connectToWebsite(str) -> bool:
     time.sleep(2)
 
     driver.execute_script("window.open('');")
@@ -219,21 +239,24 @@ def connectToWebsite(str):
     driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
     driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
     time.sleep(2)
-    driverClick(By.XPATH, str)
-    driverClick(By.XPATH, '//button[text()="连接"]')
-    print('Site connected to metamask')
+    click = driverClick(By.XPATH, str)
+    if click:
+        driverClick(By.XPATH, '//button[text()="连接"]')
+        print('Site connected to metamask')
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
+    return click
 
 
 def acceptNetworkByChain(str):
-
+    idx = 0
     while True:
-        if len(driver.window_handles) > 1:
+        if len(driver.window_handles) > 1 or idx > 30:
             break
         else:
             print("等待小狐狸...............")
             time.sleep(1)
+        idx += 1
     driver.switch_to.window(driver.window_handles[1])
 
     driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
@@ -241,19 +264,39 @@ def acceptNetworkByChain(str):
 
     time.sleep(2)
     driverClick(By.XPATH, str)
-    driverClick(By.XPATH,'//button[text()="切换网络"]')
+    driverClick(By.XPATH, '//button[text()="切换网络"]')
     print('Site connected to metamask')
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
-def signin(cnt=0):
-
+def switchNetworkByChain():
+    idx = 0
     while True:
-        if len(driver.window_handles) > 1:
+        if len(driver.window_handles) > 1 or idx > 30:
             break
         else:
             print("等待小狐狸...............")
             time.sleep(1)
+        idx += 1
+    driver.switch_to.window(driver.window_handles[1])
+
+    driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
+    driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
+
+    time.sleep(2)
+    driverClick(By.XPATH, '//button[text()="切换网络"]')
+    print('Site switch network')
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+def signin(cnt=0):
+    idx = 0
+    while True:
+        if len(driver.window_handles) > 1 or idx > 30:
+            break
+        else:
+            print("等待小狐狸...............")
+            time.sleep(1)
+        idx += 1
     driver.switch_to.window(driver.window_handles[1])
 
     driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))

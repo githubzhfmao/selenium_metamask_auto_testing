@@ -23,15 +23,21 @@ def runTest(seed_phrase, wait_time):
     auto.driverClick(By.XPATH, "/html/body/div[1]/div[1]/div/div[1]/div[3]/div[4]/button[1]/div[1]/div/span")
     # 连接钱包
     auto.connectToWebsite('//button[text()="下一步"]')
-
-    driver.get('https://pioneer.particle.network/zh-CN/point')
+    time.sleep(2)
     auto.signin()
+    time.sleep(2)
+    auto.driverClick(By.XPATH, '//*[@id="navbar"]/header/ul[2]/li[1]/a')
     checkin_flag = auto.driverClick(By.XPATH, "/html/body/div[1]/div[1]/div/div[1]/div/div[2]/div[1]/div/div[4]/div[4]/button/div[1]/div/span")
     if checkin_flag:
-        auto.driverClick(By.XPATH, "/html/body/div[4]/div/div[2]/div/div/div[2]/div[4]/div[2]/button/div[1]/div/span/div")
-        auto.acceptNetworkByChain('//button[text()="批准"]')
-        auto.signin(3)
-        time.sleep(5)
+        conform = auto.driverClick(By.XPATH, "/html/body/div[4]/div/div[2]/div/div/div[2]/div[4]/div[2]/button/div[1]/div/span/div")
+        if conform:
+            auto.acceptNetworkByChain('//button[text()="批准"]')
+            auto.driverClick(By.XPATH, "/html/body/div[4]/div/div[2]/div/div/div[2]/div[4]/div[2]/button/div[1]/div/span/div")
+            time.sleep(2)
+            auto.signin(3)
+            time.sleep(5)
+        else:
+            print("今日已签到")
     else:
         print("今日已签到")
     # # 退出
