@@ -52,7 +52,7 @@ def checkHandles():
 def metamaskSetup(recoveryPhrase, password):
     idx = 0
     while True:
-        if len(driver.window_handles) > 1 or idx > 30:
+        if len(driver.window_handles) > 1 or idx > 20:
             break
         else:
             print("等待小狐狸...............")
@@ -66,9 +66,9 @@ def metamaskSetup(recoveryPhrase, password):
     phrases = recoveryPhrase.split(" ")
     if len(phrases) == 24:
         driverClick(By.CLASS_NAME, 'dropdown__select')
-        time.sleep(3)
-        driverClick(By.XPATH, '//option[text()="我有一个包含24个单词的私钥助记词"]')
         time.sleep(2)
+        driverClick(By.XPATH, '//option[text()="我有一个包含24个单词的私钥助记词"]')
+        time.sleep(1)
     elif len(phrases) != 12:
         raise ValueError(f'助记词长度异常：{len(phrases)}')
 
@@ -80,16 +80,16 @@ def metamaskSetup(recoveryPhrase, password):
 
     driverClick(By.XPATH, '//button[text()="确认私钥助记词"]')
 
-    time.sleep(2)
+    time.sleep(1)
     inputs = driver.find_elements(By.XPATH, '//input')
     inputs[0].send_keys(password)
     inputs[1].send_keys(password)
     driverClick(By.XPATH, '//*[@id="app-content"]/div/div[2]/div/div/div/div[2]/form/div[3]/label/input')
     driverClick(By.XPATH, '//button[text()="导入我的钱包"]')
-    time.sleep(2)
     driverClick(By.XPATH, '//button[text()="知道了！"]')
     driverClick(By.XPATH, '//button[text()="下一步"]')
     driverClick(By.XPATH, '//button[text()="完成"]')
+    driverClick(By.XPATH, '//*[@id="popover-content"]/div/div/section/div[1]/div/button')
     # time.sleep(2)
 
     # # closing the message popup after all done metamask screen
@@ -124,6 +124,8 @@ def driverClick(by: By, value: str, cnt=3) -> bool:
             target.click()
         except Exception as e:
             print(f"第{i + 1}次点击失败：{value}")
+            if cnt == 1:
+                return False
             time.sleep(2)
         else:
             return True
@@ -176,8 +178,8 @@ def addAndChangeNetwork():
     driver.switch_to.window(driver.window_handles[1])
     driver.get('chrome-extension://{}/home.html'.format(EXTENSION_ID))
     # driver.refresh()
-    driverClick(By.XPATH,"//button[text()='批准']")
-    driverClick(By.XPATH,"//button[text()='切换网络']")
+    driverClick(By.XPATH, "//button[text()='批准']")
+    driverClick(By.XPATH, "//button[text()='切换网络']")
     time.sleep(3)
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
@@ -230,41 +232,55 @@ def changeNetworkByChainList(network_name):
     driver.switch_to.window(driver.window_handles[0])
 
 
-def connectToWebsite(str) -> bool:
+def connectToWebsite(str, cnt=0) -> bool:
     time.sleep(2)
-
-    driver.execute_script("window.open('');")
+    if cnt > 2:
+        return False
     driver.switch_to.window(driver.window_handles[1])
-
-    driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
-    driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
-    time.sleep(2)
-    click = driverClick(By.XPATH, str)
+    click = driverClick(By.XPATH, str, 1)
     if click:
         driverClick(By.XPATH, '//button[text()="连接"]')
         print('Site connected to metamask')
-    driver.close()
-    driver.switch_to.window(driver.window_handles[0])
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+    else:
+        driver.close()
+        driver.switch_to.window(driver.window_handles[0])
+        return connectToWebsite(str, cnt + 1)
     return click
 
 
 def acceptNetworkByChain(str):
     idx = 0
     while True:
-        if len(driver.window_handles) > 1 or idx > 30:
+        if len(driver.window_handles) > 1 or idx > 20:
             break
         else:
             print("等待小狐狸...............")
             time.sleep(1)
         idx += 1
     driver.switch_to.window(driver.window_handles[1])
-
-    driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
-    driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
-
-    time.sleep(2)
     driverClick(By.XPATH, str)
     driverClick(By.XPATH, '//button[text()="切换网络"]')
+    print('Site connected to metamask')
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
+
+
+
+
+def depositNetworkByChain():
+    idx = 0
+    while True:
+        if len(driver.window_handles) > 1 or idx > 20:
+            break
+        else:
+            print("等待小狐狸...............")
+            time.sleep(1)
+        idx += 1
+    driver.switch_to.window(driver.window_handles[1])
+    driverClick(By.XPATH, '//button[text()="切换网络"]')
+    driverClick(By.XPATH, '//button[text()="确认"]')
     print('Site connected to metamask')
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
@@ -272,37 +288,28 @@ def acceptNetworkByChain(str):
 def switchNetworkByChain():
     idx = 0
     while True:
-        if len(driver.window_handles) > 1 or idx > 30:
+        if len(driver.window_handles) > 1 or idx > 20:
             break
         else:
             print("等待小狐狸...............")
             time.sleep(1)
         idx += 1
     driver.switch_to.window(driver.window_handles[1])
-
-    driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
-    driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
-
-    time.sleep(2)
     driverClick(By.XPATH, '//button[text()="切换网络"]')
     print('Site switch network')
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
-def signin(cnt=0):
+def signin(cnt=1):
     idx = 0
     while True:
-        if len(driver.window_handles) > 1 or idx > 30:
+        if len(driver.window_handles) > 1 or idx > 20:
             break
         else:
             print("等待小狐狸...............")
             time.sleep(1)
         idx += 1
     driver.switch_to.window(driver.window_handles[1])
-
-    driver.get('chrome-extension://{}/popup.html'.format(EXTENSION_ID))
-    driver.execute_script("window.scrollBy(0, document.body.scrollHeight)")
-    time.sleep(3)
-    driverClick(By.XPATH, '//button[text()="明白了！"]', cnt)
+    driverClick(By.XPATH, '//button[text()="明白了"]', cnt)
     driverClick(By.XPATH, '//button[text()="签名"]')
     print('Site signin to metamask')
     driver.close()

@@ -21,22 +21,48 @@ def runTest(seed_phrase, wait_time):
     driver.implicitly_wait(wait_time)
 
     auto.driverClick(By.XPATH, "/html/body/div[1]/div[1]/div/div[1]/div[3]/div[4]/button[1]/div[1]/div/span")
+    time.sleep(2)
     # 连接钱包
     auto.connectToWebsite('//button[text()="下一步"]')
     time.sleep(2)
     auto.signin()
     time.sleep(2)
     auto.driverClick(By.XPATH, '//*[@id="navbar"]/header/ul[2]/li[1]/a')
-    checkin_flag = auto.driverClick(By.XPATH, "/html/body/div[1]/div[1]/div/div[1]/div/div[2]/div[1]/div/div[4]/div[4]/button/div[1]/div/span")
+    checkin_flag = auto.driverClick(By.XPATH, '//button[div[div[span[text()="Check-in"]]]]')
     if checkin_flag:
-        conform = auto.driverClick(By.XPATH, "/html/body/div[4]/div/div[2]/div/div/div[2]/div[4]/div[2]/button/div[1]/div/span/div")
+
+        conform = auto.driverClick(By.XPATH, '//button[div[div[span[div[text()="Confirm"]]]]]')
         if conform:
             auto.acceptNetworkByChain('//button[text()="批准"]')
-            auto.driverClick(By.XPATH, "/html/body/div[4]/div/div[2]/div/div/div[2]/div[4]/div[2]/button/div[1]/div/span/div")
-            time.sleep(2)
-            auto.signin(3)
-            time.sleep(5)
+            checkin_flag = auto.driverClick(By.XPATH, '//button[div[div[span[div[text()="Confirm"]]]]]')
+            if checkin_flag:
+                time.sleep(2)
+                auto.signin(2)
+                time.sleep(5)
         else:
+
+            # deposit = auto.driverClick(By.XPATH, '//button[div[div[span[text()="Deposit"]]]]')
+            # if deposit:
+            #     input_eth = driver.find_element(By.XPATH,
+            #                                     "/html/body/div[1]/div[1]/div/div[1]/div/div[1]/div[3]/div[2]/div[1]/input")
+            #     input_eth.send_keys("0.1")
+            #     auto.driverClick(By.XPATH, '//button[div[div[span[text()="Deposit Universal Gas"]]]]')
+            #     time.sleep(2)
+            #     auto.depositNetworkByChain()
+            #     time.sleep(2)
+            #     auto.driverClick(By.XPATH, '//*[@id="navbar"]/header/ul[2]/li[1]/a')
+            #     checkin_flag = auto.driverClick(By.XPATH, '//button[div[div[span[text()="Check-in"]]]]')
+            #     if checkin_flag:
+            #
+            #         conform = auto.driverClick(By.XPATH, '//button[div[div[span[div[text()="Confirm"]]]]]')
+            #         if conform:
+            #             auto.acceptNetworkByChain('//button[text()="批准"]')
+            #             checkin_flag = auto.driverClick(By.XPATH, '//button[div[div[span[div[text()="Confirm"]]]]]')
+            #             if checkin_flag:
+            #                 time.sleep(2)
+            #                 auto.signin(2)
+            #                 time.sleep(5)
+            # else:
             print("今日已签到")
     else:
         print("今日已签到")
